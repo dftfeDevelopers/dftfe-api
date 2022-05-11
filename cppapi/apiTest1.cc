@@ -67,7 +67,8 @@ main(int argc, char *argv[])
 
   double energy = dftfeWrapped.computeDFTFreeEnergy(true, false);
 
-  std::cout << "DFT free energy: " << energy << std::endl;
+  if (world_rank==0)
+     std::cout << "DFT free energy: " << energy << std::endl;
 
   dftfeWrapped.clear();
 
