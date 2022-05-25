@@ -101,7 +101,7 @@ main(int argc, char *argv[])
     std::vector<bool> pbc1(3, false);
 
     dftfe::dftfeWrapper dftfeWrappedObject1(
-      new_comm, false, atomicPositionsCart1, atomicNumbers1, cell1, pbc1);
+      new_comm, true, atomicPositionsCart1, atomicNumbers1, cell1, pbc1);
 
     const double energy = dftfeWrappedObject1.computeDFTFreeEnergy(true, false);
 
@@ -134,7 +134,7 @@ main(int argc, char *argv[])
     std::vector<bool> pbc2(3, false);
 
     dftfe::dftfeWrapper dftfeWrappedObject2(
-      new_comm, false, atomicPositionsCart2, atomicNumbers2, cell2, pbc2);
+      new_comm, true, atomicPositionsCart2, atomicNumbers2, cell2, pbc2);
 
     const double energy = dftfeWrappedObject2.computeDFTFreeEnergy(true, false);
 
