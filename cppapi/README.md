@@ -1,6 +1,6 @@
 DFT-FE's cpp API is already in-built into the library in the form of dftfeWrapper class. The doxygen documentation of this class is provided [here](https://dftfedevelopers.github.io/dftfe/classdftfe_1_1dftfe_wrapper.html). 
 
-* The wrapper currently only sets up GGA PBE ground-state DFT calculations using ONCV pseudopotentials (http://www.pseudo-dojo.org for example). All types of boundary conditions (non-periodic, periodic and semi-periodic) are supported by the wrapper. Further collinear spin-polarization DFT calculations are also supported.
+* The wrapper currently only sets up GGA PBE ground-state DFT calculations using ONCV pseudopotentials (http://www.pseudo-dojo.org for example). All types of boundary conditions (non-periodic, periodic and semi-periodic) are supported by the wrapper. Further collinear spin-polarization DFT calculations are also supported. More functionality to the API will be added soon.
 
 * We use atomic units throughout the wrapper.
 
@@ -11,6 +11,8 @@ DFT-FE's cpp API is already in-built into the library in the form of dftfeWrappe
 * dftfeWrapper object can be deleted using the *clear* member function. 
 
 * The following two static member function calls of dftfeWrapper class are mandatory to use the API: *globalHandlesInitialize* just after MPI_Init and *globalHandlesFinalize* just before MPI_Finalize and after deleting all dftfeWrapper objects. 
+
+* **CAUTION**: Due to the nature of the elecstrostatics formulation in DFT-FE we strongly recommend to tile periodic cell lengths so that they are more than 10 atomic units
 
 
 cpp API demo example
