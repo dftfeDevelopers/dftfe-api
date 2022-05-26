@@ -16,7 +16,9 @@ cpp API demo example
 
 * Create build directory and compile the example using Cmake by passing the dftfe installation path for the complex datatype as that would work all cases. For example on NERSC Perlmutter machine we used:
 ```
-cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/installComplex -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc
+$ mkdir build 
+$ cd build
+$ cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/installComplex -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc ../
 ```
 
 * set ``DFTFE_PSP_PATH'' environment variable using export. The pseudpotential directory must contain ONCV files in the format: AtomicSymbol.upf
