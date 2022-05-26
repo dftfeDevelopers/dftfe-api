@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 project(apitest-proj)
-add_executable(apitest apiTestTwoNonPeriodicSystemsMPI.cc)
+add_executable(apitest example2/apiTestTwoPeriodicSystemsMPI.cc)
 
 
 set(CMAKE_CXX_STANDARD 14)
