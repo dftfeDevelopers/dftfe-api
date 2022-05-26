@@ -4,7 +4,7 @@
 #SBATCH -q early_science
 #SBATCH --job-name dftfeapitest-example1
 #SBATCH -t 00:30:00
-#SBATCH -n 128
+#SBATCH -n 32
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-node=4

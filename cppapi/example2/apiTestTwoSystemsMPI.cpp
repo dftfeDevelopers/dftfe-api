@@ -31,6 +31,22 @@
 #include <sstream>
 #include <sys/stat.h>
 
+//
+//This demo example runs two material systems with MPI on two separate MPI
+//communicators created with even and odd MPI ranks respectively:
+//
+//Material system 1 on even MPI rank communicator:
+//Periodic BCC AlNi 2x2x2 16 atom super cell using DFT-FE with ONCV pseudopotentials,
+//GGA PBE exchange-correlation, 500 K Fermi-Dirac smearing temperature, and 2x2x2
+//MP shifted k-point grid. Spin un-polarized DFT calculations are used.
+//GPU capability can be toggled on or off depending on the architecture
+//
+//Material system 2 on odd MPI rank communicator:
+//Periodic BCC Fe 2x2x2 16 atom super cell using DFT-FE with ONCV pseudopotentials,
+//GGA PBE exchange-correlation, 500 K Fermi-Dirac smearing temperature, and 2x2x2
+//MP shifted k-point grid. Spin polarized DFT calculations are used.
+//GPU capability can be toggled on or off depending on the architecture
+
 
 
 int
@@ -77,71 +93,129 @@ main(int argc, char *argv[])
   dftfe::dftfeWrapper::globalHandlesInitialize();
 
 
-
+  //Material system 1
   if (new_comm!=MPI_COMM_NULL && colour==0)
   {
-    std::vector<std::vector<double>> cell1(3, std::vector<double>(3, 0.0));
-    cell1[0][0] = 20.0;
-    cell1[1][1] = 20.0;
-    cell1[2][2] = 20.0;
+    //in Bohr units
+    std::vector<std::vector<double>> cell(3, std::vector<double>(3, 0.0));
+    cell[0][0] = 10.9146877116;
+    cell[1][1] = 10.9146877116;
+    cell[2][2] = 10.9146877116;
 
-    std::vector<std::vector<double>> atomicPositionsCart1(
-      2, std::vector<double>(3, 0.0));
-    atomicPositionsCart1[0][0] = 8.0;
-    atomicPositionsCart1[0][1] = 10.0;
-    atomicPositionsCart1[0][2] = 10.0;
-    atomicPositionsCart1[1][0] = 11.0;
-    atomicPositionsCart1[1][1] = 10.0;
-    atomicPositionsCart1[1][2] = 10.0;
+    //in Bohr units
+    std::vector<std::vector<double>> atomicPositionsCart={{0.000000000000,0.000000000000,0.000000000000},
+                                      {0.250000000000,0.250000000000,0.250000000000},
+                                      {0.000000000000,0.000000000000,0.500000000000},
+                                      {0.250000000000,0.250000000000,0.750000000000},
+                                      {0.000000000000,0.500000000000,0.000000000000},
+                                      {0.250000000000,0.750000000000,0.250000000000},
+                                      {0.000000000000,0.500000000000,0.500000000000},
+                                      {0.250000000000,0.750000000000,0.750000000000},
+                                      {0.500000000000,0.000000000000,0.000000000000},
+                                      {0.750000000000,0.250000000000,0.250000000000},
+                                      {0.500000000000,0.000000000000,0.500000000000},
+                                      {0.750000000000,0.250000000000,0.750000000000},
+                                      {0.500000000000,0.500000000000,0.000000000000},
+                                      {0.750000000000,0.750000000000,0.250000000000},
+                                      {0.500000000000,0.500000000000,0.500000000000},
+                                      {0.750000000000,0.750000000000,0.750000000000}};
 
-    std::vector<unsigned int> atomicNumbers1(atomicPositionsCart1.size());
-    atomicNumbers1[0] = 8;
-    atomicNumbers1[1] = 6;
+    for (unsigned int i=0;i<atomicPositionsCart.size();++i)
+      for (unsigned int j=0;j<3;++j)
+        atomicPositionsCart[i][j]*=10.9146877116;
 
-    std::vector<bool> pbc1(3, false);
+    std::vector<unsigned int> atomicNumbers={13,28,13,28,13,28,13,28,13,28,13,28,13,28,13,28};
 
-    dftfe::dftfeWrapper dftfeWrappedObject1(
-      new_comm, true, atomicPositionsCart1, atomicNumbers1, cell1, pbc1);
+    //constructs dftfe wrapper object
+    dftfe::dftfeWrapper dftfeWrappedObject(MPI_COMM_WORLD,
+                                  true, //GPU toggle 
+                                  atomicPositionsCart,
+                                  atomicNumbers,
+                                  cell,
+                                  std::vector< bool >{true, true, true}, //pbc
+                                  std::vector< unsigned int >{2, 2, 2},//MP grid
+                                  std::vector< bool >{true, true, true},//MP grid shift
+                                  false,//spin polarization toggle
+                                  0.0,//starting magnetization
+                                  500.0,//Fermi-Dirac smearing temperature in K
+                                  0,//auto k-point parallelization
+                                  1.0,//Mesh size around atom 
+                                  4);
 
-    const double energy = dftfeWrappedObject1.computeDFTFreeEnergy(true, false);
+    //performs ground-state DFT calculation and computes ground-state free energy.
+    //ionic forces (first boolean flag) and cell stress (second boolean flag)
+    //computation are set to false
+    const double energy = dftfeWrappedObject.computeDFTFreeEnergy(false, false);
 
     if (my_new_comm_rank==0)
       std::cout << "DFT free energy for system 1: " << energy << std::endl;
 
-    dftfeWrappedObject1.clear();
+    //clear call is not required as the object is automatically destroyed when
+    //it goes out of scope
+    //dftfeWrappedObject.clear();
   }
 
+  //Material system 2
   if (new_comm!=MPI_COMM_NULL && colour==1)
   {
-    std::vector<std::vector<double>> cell2(3, std::vector<double>(3, 0.0));
-    cell2[0][0] = 20.0;
-    cell2[1][1] = 20.0;
-    cell2[2][2] = 20.0;
+    //in Bohr units
+    std::vector<std::vector<double>> cell(3, std::vector<double>(3, 0.0));
+    cell[0][0] = 10.73572298;
+    cell[1][1] = 10.73572298;
+    cell[2][2] = 10.73572298;
 
-    std::vector<std::vector<double>> atomicPositionsCart2(
-      2, std::vector<double>(3, 0.0));
-    atomicPositionsCart2[0][0] = 8.2;
-    atomicPositionsCart2[0][1] = 10.0;
-    atomicPositionsCart2[0][2] = 10.0;
-    atomicPositionsCart2[1][0] = 10.8;
-    atomicPositionsCart2[1][1] = 10.0;
-    atomicPositionsCart2[1][2] = 10.0;
+    //in Bohr units
+    std::vector<std::vector<double>> atomicPositionsCart={{0.000000000000,0.000000000000,0.000000000000},
+                                      {0.250000000000,0.250000000000,0.250000000000},
+                                      {0.000000000000,0.000000000000,0.500000000000},
+                                      {0.250000000000,0.250000000000,0.750000000000},
+                                      {0.000000000000,0.500000000000,0.000000000000},
+                                      {0.250000000000,0.750000000000,0.250000000000},
+                                      {0.000000000000,0.500000000000,0.500000000000},
+                                      {0.250000000000,0.750000000000,0.750000000000},
+                                      {0.500000000000,0.000000000000,0.000000000000},
+                                      {0.750000000000,0.250000000000,0.250000000000},
+                                      {0.500000000000,0.000000000000,0.500000000000},
+                                      {0.750000000000,0.250000000000,0.750000000000},
+                                      {0.500000000000,0.500000000000,0.000000000000},
+                                      {0.750000000000,0.750000000000,0.250000000000},
+                                      {0.500000000000,0.500000000000,0.500000000000},
+                                      {0.750000000000,0.750000000000,0.750000000000}};
 
-    std::vector<unsigned int> atomicNumbers2(atomicPositionsCart2.size());
-    atomicNumbers2[0] = 8;
-    atomicNumbers2[1] = 6;
+    for (unsigned int i=0;i<atomicPositionsCart.size();++i)
+      for (unsigned int j=0;j<3;++j)
+        atomicPositionsCart[i][j]*=10.9146877116;
 
-    std::vector<bool> pbc2(3, false);
+    std::vector<unsigned int> atomicNumbers={26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26};
 
-    dftfe::dftfeWrapper dftfeWrappedObject2(
-      new_comm, true, atomicPositionsCart2, atomicNumbers2, cell2, pbc2);
+    //constructs dftfe wrapper object
+    dftfe::dftfeWrapper dftfeWrappedObject(MPI_COMM_WORLD,
+                                  true, //GPU toggle
+                                  atomicPositionsCart,
+                                  atomicNumbers,
+                                  cell,
+                                  std::vector< bool >{true, true, true}, //pbc
+                                  std::vector< unsigned int >{2, 2, 2},//MP grid
+                                  std::vector< bool >{true, true, true},//MP grid shift
+                                  true,//spin polarization toggle
+                                  0.1,//starting magnetization
+                                  500.0,//Fermi-Dirac smearing temperature in K
+                                  0,//auto k-point parallelization
+                                  1.0,//Mesh size around atom
+                                  4);
 
-    const double energy = dftfeWrappedObject2.computeDFTFreeEnergy(true, false);
+    //performs ground-state DFT calculation and computes ground-state free energy.
+    //ionic forces (first boolean flag) and cell stress (second boolean flag)
+    //computation are set to false
+    const double energy = dftfeWrappedObject.computeDFTFreeEnergy(false, false);
+
 
     if (my_new_comm_rank==0)
       std::cout << "DFT free energy for system 2: " << energy << std::endl;
 
-    dftfeWrappedObject2.clear();
+    //clear call not required as the object is automatically destroyed when it
+    //goes out of scope
+    //dftfeWrappedObject.clear();
   }
 
 

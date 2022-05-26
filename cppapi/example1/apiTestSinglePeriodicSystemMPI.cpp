@@ -33,6 +33,8 @@
 
 
 //
+//This demo example runs a single material system with MPI:
+//
 //Periodic BCC AlNi 2x2x2 16 atom super cell using DFT-FE with ONCV pseudopotentials,
 //GGA PBE exchange-correlation, 500 K Fermi-Dirac smearing temperature, and 2x2x2
 //MP shifted k-point grid. Spin un-polarized DFT calculations are used.
@@ -96,9 +98,10 @@ main(int argc, char *argv[])
 				  1.0,//Mesh size around atom 
 				  4);
 
-  //performs ground-state DFT calculation and computes ionic forces
-  // (first boolean flag) and cell stress (second boolean flag)
-  double energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
+  //performs ground-state DFT calculation and computes ground-state free energy.
+  //ionic forces (first boolean flag) and cell stress (second boolean flag)
+  //computation are set to false
+  double energy = dftfeWrapped.computeDFTFreeEnergy(false, false);
 
   if (world_rank==0)
      std::cout << "DFT free energy: " << energy << std::endl;

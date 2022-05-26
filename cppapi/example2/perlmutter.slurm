@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH -A m3916_g
 #SBATCH -C gpu
-#SBATCH --job-name apitest
+#SBATCH -q early_science
+#SBATCH --job-name dftfeapitest-example2
 #SBATCH -t 00:30:00
-#SBATCH -n 4
+#SBATCH -n 64
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-node=4
@@ -16,4 +17,4 @@ module unload cray-libsci/21.08.1.2
 module load nccl/2.11.4
 export OMP_NUM_THREADS=1
 
-srun ./apitest > output
+srun ./dftfeapitest > output
