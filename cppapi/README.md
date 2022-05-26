@@ -6,7 +6,7 @@ DFT-FE's cpp API is already in-built into the library in the form of dftfeWrappe
 
 * The constructor as well as reinit functions of the wrapper takes the following objects: mpi communicator, list of atomic cartesian coordinates (origin at corner), list of atomic numbers, cell vectors, cell periodic boundary conditions, finite-element mesh size (related to plane-wave kinetic energy cutoff typically used in plane-wave based DFT codes), k-point Monkhorst-Pack grid related inputs, spin polarization toggle (default is off), GPU usage toggle (default if off), mixing parameter and other DFT related input parameters. Please refer to doxygen documentation and the demo example source files for further details on datastructure of the input parameters and other regarding how to use the wrapper. 
 
-* Geometry update calls to update the atomic coordinates and/or the cell vectors are also provided which perform a fast update of the related dftfe data structures without deleting the object and performing initialization from scratch. Further, this allows the electronic fields to be reused as optimal initial guesses for subsequent ground-state solve calls.
+* Geometry update calls to update the atomic coordinates (`updateAtomPositions`) and/or the cell vectors (*deformCell*) are also provided which perform a fast update of the related dftfe data structures without deleting the object and performing initialization from scratch. Further, this allows the electronic fields to be reused as optimal initial guesses for subsequent ground-state solve calls.
 
 * dftfeWrapper object can be deleted using the *clear* member function. 
 
