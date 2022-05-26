@@ -24,6 +24,11 @@ cpp API demo example
 
 * Create build directory and compile the example using Cmake by passing the dftfe installation path for the complex datatype as that would work all cases. For example on NERSC Perlmutter machine we used:
 ```
+$ module load PrgEnv-gnu
+$ module load cudatoolkit
+$ module unload cray-libsci/21.08.1.2
+$ module load cmake/3.22.0
+$ module load nccl/2.11.4
 $ mkdir build 
 $ cd build
 $ cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/installComplex -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc ../
