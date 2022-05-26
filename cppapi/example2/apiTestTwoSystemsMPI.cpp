@@ -184,7 +184,7 @@ main(int argc, char *argv[])
 
     for (unsigned int i=0;i<atomicPositionsCart.size();++i)
       for (unsigned int j=0;j<3;++j)
-        atomicPositionsCart[i][j]*=10.9146877116;
+        atomicPositionsCart[i][j]*=10.73572298;
 
     std::vector<unsigned int> atomicNumbers={26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26};
 
