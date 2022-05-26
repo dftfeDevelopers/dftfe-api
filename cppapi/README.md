@@ -22,7 +22,7 @@ cpp API demo example
 
 * Choose one of the demo examples by changing the source file in the CMakelists.txt. The description of the demo examples are given inside their respective .cpp files. The only header from the dftfe library which is required to be included in the .cpp file is *dftfeWrapper.h*.
 
-* Create build directory and compile the example using Cmake by passing the dftfe installation path for the complex datatype as that would work all cases. For example on NERSC Perlmutter machine we used:
+* Create build directory and compile the example using CMake by passing the dftfe installation path for the complex datatype as that would work all cases. For example on NERSC Perlmutter machine we used:
 ```
 $ module load PrgEnv-gnu
 $ module load cudatoolkit
