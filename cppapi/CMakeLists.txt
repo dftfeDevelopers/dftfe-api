@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 project(dftfeapitest-proj)
-add_executable(dftfeapitest example1/apiTestSinglePeriodicSystemMPI.cpp)
-#add_executable(dftfeapitest example2/apiTestTwoSystemsMPI.cpp)
+
+#add_executable(dftfeapitest example1/apiTestSinglePeriodicSystemMPI.cpp)
+add_executable(dftfeapitest example2/apiTestTwoSystemsMPI.cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

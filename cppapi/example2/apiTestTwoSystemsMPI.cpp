@@ -130,7 +130,7 @@ main(int argc, char *argv[])
     std::vector<unsigned int> atomicNumbers={13,28,13,28,13,28,13,28,13,28,13,28,13,28,13,28};
 
     //constructs dftfe wrapper object
-    dftfe::dftfeWrapper dftfeWrappedObject(MPI_COMM_WORLD,
+    dftfe::dftfeWrapper dftfeWrappedObject(new_comm,
                                   true, //GPU toggle 
                                   atomicPositionsCart,
                                   atomicNumbers,
@@ -186,7 +186,7 @@ main(int argc, char *argv[])
     std::vector<unsigned int> atomicNumbers={26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26};
 
     //constructs dftfe wrapper object
-    dftfe::dftfeWrapper dftfeWrappedObject(MPI_COMM_WORLD,
+    dftfe::dftfeWrapper dftfeWrappedObject(new_comm,
                                   true, //GPU toggle
                                   atomicPositionsCart,
                                   atomicNumbers,
