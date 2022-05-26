@@ -25,8 +25,9 @@ cpp API demo example
 $ mkdir build 
 $ cd build
 $ cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/installComplex -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc ../
+$ make
 ```
 
 * set *DFTFE_PSP_PATH* environment variable using export. The pseudpotential directory must contain ONCV files in the format: AtomicSymbol.upf
 
-* Run the compiled executable as a MPI job
+* Run the compiled *dftfeapi* executable as a MPI job
