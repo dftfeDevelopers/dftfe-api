@@ -22,6 +22,9 @@
 //
 #include <dftfeWrapper.h>
 
+//mpi header
+#include <mpi.h>
+
 //
 // C++ headers
 //
@@ -134,13 +137,7 @@ main(int argc, char *argv[])
                                   cell,
                                   std::vector< bool >{true, true, true}, //pbc
                                   std::vector< unsigned int >{2, 2, 2},//MP grid
-                                  std::vector< bool >{true, true, true},//MP grid shift
-                                  false,//spin polarization toggle
-                                  0.0,//starting magnetization
-                                  500.0,//Fermi-Dirac smearing temperature in K
-                                  0,//auto k-point parallelization
-                                  1.0,//Mesh size around atom 
-                                  4);
+                                  std::vector< bool >{true, true, true});//MP grid shift
 
     //performs ground-state DFT calculation and computes ground-state free energy.
     //ionic forces (first boolean flag) and cell stress (second boolean flag)
@@ -198,11 +195,7 @@ main(int argc, char *argv[])
                                   std::vector< unsigned int >{2, 2, 2},//MP grid
                                   std::vector< bool >{true, true, true},//MP grid shift
                                   true,//spin polarization toggle
-                                  0.1,//starting magnetization
-                                  500.0,//Fermi-Dirac smearing temperature in K
-                                  0,//auto k-point parallelization
-                                  1.0,//Mesh size around atom
-                                  4);
+                                  0.1);//starting magnetization
 
     //performs ground-state DFT calculation and computes ground-state free energy.
     //ionic forces (first boolean flag) and cell stress (second boolean flag)
