@@ -10,7 +10,7 @@ DFT-FE's cpp API is already in-built into the library in the form of dftfeWrappe
 
 * dftfeWrapper object can be deleted using the *clear* member function. 
 
-* The following two static function calls are mandatory to use the API: *globalHandlesInitialize* just after MPI_Init and *globalHandlesFinalize* just before MPI_Finalize and after deleting all dftfeWrapper objects.
+* The following two static member function calls of dftfeWrapper class are mandatory to use the API: *globalHandlesInitialize* just after MPI_Init and *globalHandlesFinalize* just before MPI_Finalize and after deleting all dftfeWrapper objects. 
 
 
 cpp API demo example
