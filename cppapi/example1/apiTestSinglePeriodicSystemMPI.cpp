@@ -36,12 +36,14 @@
 
 
 //
-//This demo example runs a single material system with MPI:
+//This demo example runs a ground-state DFT on a single material system with MPI:
 //
 //Periodic BCC AlNi 2x2x2 16 atom super cell using DFT-FE with ONCV pseudopotentials,
 //GGA PBE exchange-correlation, 500 K Fermi-Dirac smearing temperature, and 2x2x2
 //MP shifted k-point grid. Spin un-polarized DFT calculations are used.
 //GPU capability can be toggled on or off depending on the architecture
+//
+//deformCell and updateAtomPositions functionality are also tested
 //
 
 
@@ -97,11 +99,104 @@ main(int argc, char *argv[])
 
   //performs ground-state DFT calculation and computes ground-state free energy.
   //ionic forces (first boolean flag) and cell stress (second boolean flag)
-  //computation are set to false
-  double energy = dftfeWrapped.computeDFTFreeEnergy(false, false);
+  //computation are set to true
+  double energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
 
   if (world_rank==0)
-     std::cout << "DFT free energy: " << energy << std::endl;
+     std::cout << "DFT free energy (in Ha) : " << energy << std::endl;
+
+  std::vector<std::vector<double>> forces=dftfeWrapped.getForcesAtoms();
+  if (world_rank==0)
+  {
+    std::cout<<"---------Forces (in Ha/Bohr)----------"<<std::endl;
+    for (unsigned int i=0; i<forces.size();i++)
+      std::cout<<"Atomid: "<<i<<", x: "<<forces[i][0]<<", y: "<<forces[i][1]<<", z: "<<forces[i][2]<<std::endl;
+  }
+
+
+  std::vector<std::vector<double>> stress=dftfeWrapped.getCellStress();
+  if (world_rank==0)
+  {       
+    std::cout<<"---------Stress (in Ha/Bohr^3)----------"<<std::endl; 
+    for (unsigned int i=0; i<3;i++)
+     for (unsigned int j=0; j<3;j++)
+	std::cout<<"Stress component["<<i<<","<<j<<"]: "<<stress[i][j]<<std::endl;
+  }
+
+  //
+  //Deform cell by applying affine volumetric strain
+  //
+  
+  dftfeWrapped.deformCell(std::vector<std::vector<double>>{{1.002,0.0,0.0},{0.0,1.002,0.0},{0.0,0.0,1.002}});
+
+  energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
+
+  if (world_rank==0)
+     std::cout << "DFT free energy (in Ha) after cell deform : " << energy << std::endl;
+
+  forces=dftfeWrapped.getForcesAtoms();
+  if (world_rank==0)
+  {
+    std::cout<<"---------Forces (in Ha/Bohr) after cell deform----------"<<std::endl;
+    for (unsigned int i=0; i<forces.size();i++)
+      std::cout<<"Atomid: "<<i<<", x: "<<forces[i][0]<<", y: "<<forces[i][1]<<", z: "<<forces[i][2]<<std::endl;
+  }
+
+
+  stress=dftfeWrapped.getCellStress();
+  if (world_rank==0)
+  {
+    std::cout<<"---------Stress (in Ha/Bohr^3) after cell deform----------"<<std::endl;
+    for (unsigned int i=0; i<3;i++)
+     for (unsigned int j=0; j<3;j++)
+        std::cout<<"Stress component["<<i<<","<<j<<"]: "<<stress[i][j]<<std::endl;
+  }
+
+  //
+  //Update x position of first atom by 0.05 Bohr
+  //
+
+  std::vector<std::vector<double>> displacementsCart={{0.05,0.000000000000,0.000000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.00000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000},
+                                      {0.000000000,0.0000000000,0.0000000000}};
+
+  dftfeWrapped.updateAtomPositions(displacementsCart);
+
+  energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
+
+  if (world_rank==0)
+     std::cout << "DFT free energy (in Ha) after atom position update : " << energy << std::endl;
+
+  forces=dftfeWrapped.getForcesAtoms();
+  if (world_rank==0)
+  {
+    std::cout<<"---------Forces (in Ha/Bohr) after atom position update----------"<<std::endl;
+    for (unsigned int i=0; i<forces.size();i++)
+      std::cout<<"Atomid: "<<i<<", x: "<<forces[i][0]<<", y: "<<forces[i][1]<<", z: "<<forces[i][2]<<std::endl;
+  }
+
+
+  stress=dftfeWrapped.getCellStress();
+  if (world_rank==0)
+  {
+    std::cout<<"---------Stress (in Ha/Bohr^3) after atom position update----------"<<std::endl;
+    for (unsigned int i=0; i<3;i++)
+     for (unsigned int j=0; j<3;j++)
+        std::cout<<"Stress component["<<i<<","<<j<<"]: "<<stress[i][j]<<std::endl;
+  }
 
   //deletes dftfe wrapper object
   dftfeWrapped.clear();

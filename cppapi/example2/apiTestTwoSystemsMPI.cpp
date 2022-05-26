@@ -35,7 +35,8 @@
 #include <sys/stat.h>
 
 //
-//This demo example runs two material systems with MPI on two separate MPI
+//This demo example runs ground-state DFT calculations on
+//two material systems with MPI on two separate MPI
 //communicators created with even and odd MPI ranks respectively:
 //
 //Material system 1 on even MPI rank communicator:
@@ -141,11 +142,11 @@ main(int argc, char *argv[])
 
     //performs ground-state DFT calculation and computes ground-state free energy.
     //ionic forces (first boolean flag) and cell stress (second boolean flag)
-    //computation are set to false
-    const double energy = dftfeWrappedObject.computeDFTFreeEnergy(false, false);
+    //computation are set to false and true respectively
+    const double energy = dftfeWrappedObject.computeDFTFreeEnergy(false, true);
 
     if (my_new_comm_rank==0)
-      std::cout << "DFT free energy for system 1: " << energy << std::endl;
+      std::cout << "DFT free energy (in Ha) for system 1: " << energy << std::endl;
 
     //clear call is not required as the object is automatically destroyed when
     //it goes out of scope
@@ -199,12 +200,12 @@ main(int argc, char *argv[])
 
     //performs ground-state DFT calculation and computes ground-state free energy.
     //ionic forces (first boolean flag) and cell stress (second boolean flag)
-    //computation are set to false
-    const double energy = dftfeWrappedObject.computeDFTFreeEnergy(false, false);
+    //computation are set to false and true respectively
+    const double energy = dftfeWrappedObject.computeDFTFreeEnergy(false, true);
 
 
     if (my_new_comm_rank==0)
-      std::cout << "DFT free energy for system 2: " << energy << std::endl;
+      std::cout << "DFT free energy (in Ha) for system 2: " << energy << std::endl;
 
     //clear call not required as the object is automatically destroyed when it
     //goes out of scope
