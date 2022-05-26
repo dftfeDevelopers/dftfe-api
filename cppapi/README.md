@@ -12,7 +12,7 @@ DFT-FE's cpp API is already in-built into the library in the form of dftfeWrappe
 
 * The following two static member function calls of dftfeWrapper class are mandatory to use the API: *globalHandlesInitialize* just after MPI_Init and *globalHandlesFinalize* just before MPI_Finalize and after deleting all dftfeWrapper objects. 
 
-* **CAUTION**: Due to the nature of the elecstrostatics formulation in DFT-FE we strongly recommend to tile periodic cell lengths so that they are more than 10 atomic units
+* **CAUTION**: Due to the nature of the electrostatics formulation implemented in DFT-FE we strongly recommend to tile periodic cell lengths so that they are more than 10 atomic units
 
 
 cpp API demo example
