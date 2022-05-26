@@ -32,6 +32,13 @@
 #include <sys/stat.h>
 
 
+//
+//Periodic BCC AlNi 2x2x2 16 atom super cell using DFT-FE with ONCV pseudopotentials,
+//GGA PBE exchange-correlation, 500 K Fermi-Dirac smearing temperature, and 2x2x2
+//MP shifted k-point grid. Spin un-polarized DFT calculations are used.
+//GPU capability can be toggled on or off depending on the architecture
+//
+
 
 int
 main(int argc, char *argv[])
@@ -40,39 +47,68 @@ main(int argc, char *argv[])
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
+  //Initialize global handles for dftfe's dependencies
   dftfe::dftfeWrapper::globalHandlesInitialize();
 
+  //in Bohr units
   std::vector<std::vector<double>> cell(3, std::vector<double>(3, 0.0));
-  cell[0][0] = 20.0;
-  cell[1][1] = 20.0;
-  cell[2][2] = 20.0;
+  cell[0][0] = 10.9146877116;
+  cell[1][1] = 10.9146877116;
+  cell[2][2] = 10.9146877116;
 
-  std::vector<std::vector<double>> atomicPositionsCart(
-    2, std::vector<double>(3, 0.0));
-  atomicPositionsCart[0][0] = 8.0;
-  atomicPositionsCart[0][1] = 10.0;
-  atomicPositionsCart[0][2] = 10.0;
-  atomicPositionsCart[1][0] = 11.0;
-  atomicPositionsCart[1][1] = 10.0;
-  atomicPositionsCart[1][2] = 10.0;
+  //in Bohr units
+  std::vector<std::vector<double>> atomicPositionsCart={{0.000000000000,0.000000000000,0.000000000000},
+                                      {0.250000000000,0.250000000000,0.250000000000},
+                                      {0.000000000000,0.000000000000,0.500000000000},
+                                      {0.250000000000,0.250000000000,0.750000000000},
+				      {0.000000000000,0.500000000000,0.000000000000},
+                                      {0.250000000000,0.750000000000,0.250000000000},
+                                      {0.000000000000,0.500000000000,0.500000000000},
+                                      {0.250000000000,0.750000000000,0.750000000000},
+                                      {0.500000000000,0.000000000000,0.000000000000},
+                                      {0.750000000000,0.250000000000,0.250000000000},
+                                      {0.500000000000,0.000000000000,0.500000000000},
+                                      {0.750000000000,0.250000000000,0.750000000000},
+                                      {0.500000000000,0.500000000000,0.000000000000},
+                                      {0.750000000000,0.750000000000,0.250000000000},
+                                      {0.500000000000,0.500000000000,0.500000000000},
+                                      {0.750000000000,0.750000000000,0.750000000000}};
+ 
+  for (unsigned int i=0;i<atomicPositionsCart.size();++i)
+     for (unsigned int j=0;j<3;++j) 
+        atomicPositionsCart[i][j]*=10.9146877116;
 
-  std::vector<unsigned int> atomicNumbers(atomicPositionsCart.size());
-  atomicNumbers[0] = 8;
-  atomicNumbers[1] = 6;
+  std::vector<unsigned int> atomicNumbers={13,28,13,28,13,28,13,28,13,28,13,28,13,28,13,28};
 
-  std::vector<bool> pbc(3, false);
+  //constructs dftfe wrapper object
+  dftfe::dftfeWrapper dftfeWrapped(MPI_COMM_WORLD, 
+		                  true, //GPU toggle 
+				  atomicPositionsCart,
+				  atomicNumbers,
+				  cell,
+				  std::vector< bool >{true, true, true}, //pbc
+				  std::vector< unsigned int >{2, 2, 2},//MP grid
+				  std::vector< bool >{true, true, true},//MP grid shift
+				  false,//spin polarization toggle
+				  0.0,//starting magnetization
+				  500.0,//Fermi-Dirac smearing temperature in K
+				  0,//auto k-point parallelization
+				  1.0,//Mesh size around atom 
+				  4);
 
-  dftfe::dftfeWrapper dftfeWrapped(
-    MPI_COMM_WORLD, false, atomicPositionsCart, atomicNumbers, cell, pbc);
-
-  double energy = dftfeWrapped.computeDFTFreeEnergy(true, false);
+  //performs ground-state DFT calculation and computes ionic forces
+  // (first boolean flag) and cell stress (second boolean flag)
+  double energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
 
   if (world_rank==0)
      std::cout << "DFT free energy: " << energy << std::endl;
 
+  //deletes dftfe wrapper object
   dftfeWrapped.clear();
 
+  //Finalize global handles for dftfe's dependencies
   dftfe::dftfeWrapper::globalHandlesFinalize();
+
   MPI_Finalize();
   return 0;
 }
