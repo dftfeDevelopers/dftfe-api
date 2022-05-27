@@ -3,8 +3,8 @@
 #SBATCH -C gpu
 #SBATCH -q early_science
 #SBATCH --job-name dftfeapitest-example1
-#SBATCH -t 00:05:00
-#SBATCH -n 32
+#SBATCH -t 00:10:00
+#SBATCH -n 64
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-node=4

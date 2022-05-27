@@ -132,7 +132,11 @@ main(int argc, char *argv[])
   energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
 
   if (world_rank==0)
+  {
+     std::cout<<std::endl;
      std::cout << "DFT free energy (in Ha) after cell deform : " << energy << std::endl;
+
+  }
 
   forces=dftfeWrapped.getForcesAtoms();
   if (world_rank==0)
@@ -178,7 +182,10 @@ main(int argc, char *argv[])
   energy = dftfeWrapped.computeDFTFreeEnergy(true, true);
 
   if (world_rank==0)
+  {
+     std::cout<<std::endl;
      std::cout << "DFT free energy (in Ha) after atom position update : " << energy << std::endl;
+  }
 
   forces=dftfeWrapped.getForcesAtoms();
   if (world_rank==0)
