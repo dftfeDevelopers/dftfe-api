@@ -39,6 +39,6 @@ $ cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/i
 $ make
 ```
 
-* set `DFTFE_PSP_PATH` environment variable using export. The pseudpotential directory must contain ONCV files in the format: AtomicSymbol.upf
+* set `DFTFE_PSP_PATH` environment variable using export. The pseudpotential directory must contain ONCV files in the format: *AtomicSymbol.upf*
 
 * Run the compiled `dftfeapi` executable as a MPI job
