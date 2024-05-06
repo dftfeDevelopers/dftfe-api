@@ -22,7 +22,7 @@ General features and cautionary remarks
 cpp API demo example
 ==========================================
 
-* Install DFT-FE current development branch (publicGithubDevelop) from [DFT-FE github repo](https://github.com/dftfeDevelopers/dftfe). The installation instructions for DFT-FE and its dependencies are provied in the development version manual [here](https://github.com/dftfeDevelopers/dftfe/blob/manual/manual-develop.pdf). To use the dftfe library as an API we suggest performing a prefix based installation using CMake. For example, please refer to an example setup script [here](https://github.com/dftfeDevelopers/dftfe/blob/publicGithubDevelop/helpers/NERSCPerlmutterGPU/setupUserPerlmutterPrefixInstall.sh). Please note that two separate libraries will be installed, one for real datatype (Gamma point) and the other for the complex datatype (multiple k-points).
+* Install DFT-FE current development branch (publicGithubDevelop) from [DFT-FE github repo](https://github.com/dftfeDevelopers/dftfe). The installation instructions for DFT-FE and its dependencies are provied in the development version manual [here](https://github.com/dftfeDevelopers/dftfe/blob/manual/manual-develop.pdf). To use the dftfe library as an API we suggest performing a prefix based installation using CMake (using -DCMAKE_INSTALL_PREFIX:PATH). Please note that two separate libraries will be installed, one for real datatype (Gamma point) and the other for the complex datatype (multiple k-points).
 
 * Choose one of the demo examples by changing the source file in the CMakelists.txt. The description of the demo examples are given inside their respective .cpp files. The only header from the dftfe library which is required to be included in the .cpp file is `dftfeWrapper.h`.
 
@@ -35,7 +35,7 @@ $ module load cmake/3.22.0
 $ module load nccl/2.11.4
 $ mkdir build 
 $ cd build
-$ cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/installComplex -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc ../
+$ cmake -DDFTFE_INSTALL_PATH=/global/common/software/m3916/softwareDFTFE/dftfe/installComplex -DCMAKE_CXX_COMPILER=CC -DCMAKE_C_COMPILER=cc  -DCMAKE_EXE_LINKER_FLAGS:STRING="-lgfortran"  ../
 $ make
 ```
 
