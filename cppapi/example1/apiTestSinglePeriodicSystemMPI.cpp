@@ -55,7 +55,7 @@ main(int argc, char *argv[])
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
   //Initialize global handles for dftfe's dependencies
-  dftfe::dftfeWrapper::globalHandlesInitialize();
+  dftfe::dftfeWrapper::globalHandlesInitialize(MPI_COMM_WORLD);
 
   //in Bohr units
   std::vector<std::vector<double>> cell(3, std::vector<double>(3, 0.0));
