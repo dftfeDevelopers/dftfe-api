@@ -13,7 +13,7 @@ target_link_libraries(dftfeapitest PUBLIC ${MPI_CXX_LIBRARIES})
 
 
 find_library(DFTFE_LIBRARY
-    NAMES dftfem
+    NAMES dftfe
     HINTS ${DFTFE_INSTALL_PATH}/lib
     NO_DEFAULT_PATH
   )
