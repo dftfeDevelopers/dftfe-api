@@ -94,7 +94,7 @@ main(int argc, char *argv[])
   MPI_Comm_rank(new_comm, &my_new_comm_rank);
 
 
-  dftfe::dftfeWrapper::globalHandlesInitialize();
+  dftfe::dftfeWrapper::globalHandlesInitialize(MPI_COMM_WORLD);
 
 
   //Material system 1
